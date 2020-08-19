@@ -4,13 +4,13 @@ from utils.managers import CustomQuerySet
 from authentication.models import User
 
 
-class Voter(models.model):
-    """ model for creating voter """
+class Subject(models.Model):
+    """ model for creating a subject """
     GENDER_OPTIONS = (
         ('M', 'MALE'),
         ('F', 'FEMALE')
     )
-    voter_name = models.CharField(max_length=100, null=False)
+    subject_name = models.CharField(max_length=100, null=False)
     gender = models.CharField(verbose_name='gender', max_length=1, choices=GENDER_OPTIONS)
     phone_number = models.CharField(max_length=20, null=False)
     id_number = models.CharField(max_length=20, blank=False, unique=True)
@@ -20,11 +20,11 @@ class Voter(models.model):
     objects = models.Manager()
 
     def __str__(self):
-        """ repr of student """
-        return self.voter_name
+        """ repr of subject """
+        return self.subject_name
 
 
-class County(models.model):
+class County(models.Model):
     """ model for creating a county """
     county_name = models.CharField(max_length=20)
 
@@ -36,7 +36,7 @@ class County(models.model):
         return self.county_name
 
 
-class SubCounty(models.model):
+class SubCounty(models.Model):
     """ model for creating a sub-county """
     sub_county_name = models.CharField(max_length=20)
     county = models.ForeignKey(County, on_delete=models.CASCADE, to_field='un_id', db_column='county')
@@ -49,7 +49,7 @@ class SubCounty(models.model):
         return self.sub_county_name
 
 
-class Constituency(models.model):
+class Constituency(models.Model):
     """ model for creating a constituency """
     constituency_name = models.CharField(max_length=50)
     county = models.ForeignKey(County, on_delete=models.CASCADE, to_field='un_id', db_column='county')
@@ -62,7 +62,7 @@ class Constituency(models.model):
         return self.constituency_name
 
 
-class Ward(models.model):
+class Ward(models.Model):
     """ model for creating a ward """
     ward_name = models.CharField(max_length=20)
     constituency = models.ForeignKey(Constituency, on_delete=models.CASCADE, to_field='un_id', db_column='constituency')
@@ -76,7 +76,7 @@ class Ward(models.model):
         return self.ward_name
 
 
-class Location(models.model):
+class Location(models.Model):
     """ model for creating a Location """
     location_name = models.CharField(max_length=20)
     ward = models.ForeignKey(Ward, on_delete=models.CASCADE, to_field='un_id', db_column='ward')
@@ -92,7 +92,7 @@ class Location(models.model):
         return self.location_name
 
 
-class PollingStation(models.model):
+class PollingStation(models.Model):
     """ model for creating a polling station """
     poll_station_name = models.CharField(max_length=20)
     ward = models.ForeignKey(Ward, on_delete=models.CASCADE, to_field='un_id', db_column='ward')
@@ -106,7 +106,7 @@ class PollingStation(models.model):
 
 
 
-class Candidate(models.model):
+class Candidate(models.Model):
     """ model for creating candidate """
     ELECTIVE_POSITIONS = (
         ('GOV', 'GOVERNER'),
@@ -132,9 +132,5 @@ class Candidate(models.model):
     def __str__(self):
         """ repr for candidate """
         return self.candidate_name
-
-
-
-
 
 
