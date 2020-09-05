@@ -7,14 +7,14 @@ from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 from password_generator import PasswordGenerator
 from authentication.models import User
-from utils.permissions import IsPoliticianAdmin, IsCampaignManager
-from school.models import Subject, County, SubCounty, Constituency, Ward, Location, PollingStation, Candidate
-from school.serializers import (SubjectSerializer, CountySerializer, SubCountySerializer, ConstituencySerializer, WardSerializer, LocationSerializer, PollingStationSerializer, CandidateSerializer, CommonUserSerializer)
+from utils.permissions import IsPoliticianAdmin, IsCampaignManager, IsAgent
+from subject.models import Subject, County, SubCounty, Constituency, Ward, Location, PollingStation, Candidate
+from subject.serializers import SubjectSerializer, CountySerializer, CountyCreateSerializer, SubCountySerializer, SubCountyCreateSerializer, ConstituencySerializer, ConstituencyCreateSerializer, WardSerializer, WardCreateSerializer, LocationSerializer, LocationCreateSerializer, SubLocationSerializer, SubLocationCreateSerializer, PollingStationSerializer, PollingStationCreateSerializer, CandidateSerializer, CandidateCreateSerializer, CommonUserSerializer
 
 
 class SubjectCreateListAPIView(ListCreateAPIView):
     serializer_class = SubjectSerializer
-    permission_classes = (IsAuthenticated, IsAgent)
+    permission_classes = (IsAuthenticated, IsAgent, IsCampaignManager, IsPoliticianAdmin)
 
     @swagger_auto_schema(operation_id="list_subjects")
     def get_queryset(self):
@@ -40,7 +40,7 @@ class SubjectCreateListAPIView(ListCreateAPIView):
 class SubjectDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = SubjectSerializer
     lookup_field = 'un_id'
-    permission_classes = (IsAuthenticated, IsPoliticianAdmin)
+    permission_classes = (IsAuthenticated, IsPoliticianAdmin, IsCampaignManager)
 
     def get_queryset(self):
         """ 
@@ -160,7 +160,6 @@ class CountyRetrieveUpdateDestroyAPIVIew(RetrieveUpdateDestroyAPIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
-
 class SubCountyCreateListAPIView(ListCreateAPIView):
     """ create and list a subcounty """
     serializer_class = SubCountySerializer
@@ -186,7 +185,6 @@ class SubCountyCreateListAPIView(ListCreateAPIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 
 class SubCountyDetailAPIView(RetrieveUpdateDestroyAPIView):
@@ -261,7 +259,6 @@ class ConstituencyCreateListAPIView(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-
 class ConstituencyDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ConstituencyCreateSerializer
     lookup_field = 'un_id'
@@ -334,7 +331,6 @@ class WardCreateListAPIView(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-
 class WardDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = WardCreateSerializer
     lookup_field = 'un_id'
@@ -380,8 +376,6 @@ class WardDetailAPIView(RetrieveUpdateDestroyAPIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
-
-
 class LocationCreateListAPIView(ListCreateAPIView):
     """ create and list a Location """
     serializer_class = LocationSerializer
@@ -407,7 +401,6 @@ class LocationCreateListAPIView(ListCreateAPIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 
 class LocationDetailAPIView(RetrieveUpdateDestroyAPIView):
@@ -455,6 +448,76 @@ class LocationDetailAPIView(RetrieveUpdateDestroyAPIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
+class SubLocationCreateListAPIView(ListCreateAPIView):
+    """ create and list a sublocation """
+    serializer_class = SubLocationSerializer
+    lookup_field = 'un_id'
+
+    def get_queryset(self):
+        """ set the queryset for the sublocation """
+        return SubLocation.active_objects.all_objects()
+
+    @swagger_auto_schema(operation_id="list_sublocations")
+    def get(self, request):
+        data = self.get_queryset()
+        serializer = self.serializer_class(data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(operation_id="create_sublocation")
+    def post(self, request):
+        """ create a sublocation """
+        data = request.data
+
+        serializer = SubLocationCreateSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class SubLocationDetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = SubLocationCreateSerializer
+    lookup_field = 'un_id'
+    # permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        """ 
+        return a different queryset depending on who is logged in
+        """
+
+        return SubLocation.active_objects.all_objects()
+
+    @swagger_auto_schema(operation_id="sublocation_detail")
+    def get(self, request, un_id):
+        sublocation = self.get_object()
+        serializer = self.serializer_class(
+            location
+        )
+        response = serializer.data
+        return Response(response, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(operation_id="update_sublocation")
+    def update(self, request, un_id):
+        sublocation = self.get_object()
+        serializer = self.serializer_class(
+            location, data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        response = serializer.data
+        return Response(response, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(operation_id="delete_sublocation")
+    def destroy(self, request, un_id):
+        """ delete one sublocation """
+        sublocation = self.get_object()
+        sublocation.soft_delete()
+
+        response = {
+            "message": "sublocation deleted successfully"
+        }
+
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class PollingStationCreateListAPIView(ListCreateAPIView):
@@ -482,7 +545,6 @@ class PollingStationCreateListAPIView(ListCreateAPIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 
 class PollingStationDetailAPIView(RetrieveUpdateDestroyAPIView):
@@ -530,7 +592,6 @@ class PollingStationDetailAPIView(RetrieveUpdateDestroyAPIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
-
 class CandidateCreateListAPIView(ListCreateAPIView):
     """ create and list a Candidate """
     serializer_class = CandidateSerializer
@@ -556,7 +617,6 @@ class CandidateCreateListAPIView(ListCreateAPIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 
 class CandidateDetailAPIView(RetrieveUpdateDestroyAPIView):
@@ -602,5 +662,3 @@ class CandidateDetailAPIView(RetrieveUpdateDestroyAPIView):
         }
 
         return Response(response, status=status.HTTP_200_OK)
-
-

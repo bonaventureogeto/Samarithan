@@ -25,11 +25,16 @@ urlpatterns = [
          name='create-wards'),
     path('ward/detail/<str:un_id>',
          views.WardDetailAPIView.as_view(), name='ward-detail'),
-    
+
     path('locations', views.LocationCreateListAPIView.as_view(),
          name='create-locations'),
     path('location/detail/<str:un_id>',
          views.LocationDetailAPIView.as_view(), name='location-detail'),
+
+    path('sublocations', views.SubLocationCreateListAPIView.as_view(),
+         name='create-sublocations'),
+    path('sublocation/detail/<str:un_id>',
+         views.SubLocationDetailAPIView.as_view(), name='sublocation-detail'),
 
     path('polling-stations', views.PollingStationCreateListAPIView.as_view(),
          name='create-polling-stations'),
@@ -38,7 +43,5 @@ urlpatterns = [
 
     path('candidates', views.CandidateCreateListAPIView.as_view(),
          name='create-candidates'),
-    path('candidate/detail/<str:un_id>',
-         views.CandidateDetailAPIView.as_view(), name='candidate-detail'),
-
+    path('candidate/detail/<str:un_id>', views.CandidateDetailAPIView.as_view(), name='candidate-detail')
 ]

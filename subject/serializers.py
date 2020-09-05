@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from Samarithan.models import Subject, County, SubCounty, Constituency, Ward, Location, PollingStation, Candidate
+from subject.models import Subject, County, SubCounty, Constituency, Ward, Location, SubLocation, PollingStation, Candidate
 from authentication.models import User
 from authentication.serializers import UserSerializer
+
 
 class SubjectSerializer(serializers.ModelSerializer):
     """ serializer class for subject """
@@ -67,14 +68,12 @@ class WardSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class WardCreateSerializer(serializers.ModelSerializer):
     """ serializer class for ward """
 
     class Meta:
         model = Ward
         fields = '__all__'
-
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -85,7 +84,6 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class LocationCreateSerializer(serializers.ModelSerializer):
     """ serializer class for location """
 
@@ -93,6 +91,21 @@ class LocationCreateSerializer(serializers.ModelSerializer):
         model = Location
         fields = '__all__'
 
+
+class SubLocationSerializer(serializers.ModelSerializer):
+    """ serializer class for sub location """
+
+    class Meta:
+        model = SubLocation
+        fields = '__all__'
+
+
+class SubLocationCreateSerializer(serializers.ModelSerializer):
+    """ serializer class for sub location """
+
+    class Meta:
+        model = SubLocation
+        fields = '__all__'
 
 
 class PollingStationSerializer(serializers.ModelSerializer):
@@ -109,7 +122,6 @@ class PollingStationCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PollingStation
         fields = '__all__'
-
 
 
 class CandidateSerializer(serializers.ModelSerializer):
@@ -136,4 +148,3 @@ class CommonUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'un_id']
-
