@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Subject, Candidate, PollingStation, SubLocation, Location, Ward, Constituency, SubCounty, County, PoliticalParty
+from subject.models import Subject, Candidate, PollingStation, SubLocation, Location, Ward, Constituency, SubCounty, County, PoliticalParty
 
 
 admin.site.register(County)
