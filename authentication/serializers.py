@@ -71,9 +71,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    email = serializers.EmailField(max_length=100, style={'placeholder': 'Email', 'autofocus': True})
     password = serializers.CharField(
-        max_length=128, min_length=6, write_only=True, )
+        max_length=128, min_length=6, write_only=True, style={'input_type': 'password', 'placeholder': 'Password'})
     token = serializers.CharField(read_only=True)
 
     def validate(self, data):

@@ -13,6 +13,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model, password_validation
 from django.contrib.sites.shortcuts import get_current_site
+from rest_framework.renderers import TemplateHTMLRenderer
 
 
 class RegistrationAPIView(GenericAPIView):
@@ -32,8 +33,7 @@ class RegistrationAPIView(GenericAPIView):
             }
         }
 
-        # response not user_data --> develop
-        # we user user_data because of open api
+        # we use user_data because of open api
         return Response(user_data, status=status.HTTP_201_CREATED)
 
 
@@ -48,6 +48,8 @@ class FetchUsersAPIView(ListAPIView):
 class LoginAPIView(GenericAPIView):
     """ api view for logging in """
     serializer_class = LoginSerializer
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'login.html'
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
