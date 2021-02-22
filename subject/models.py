@@ -134,7 +134,6 @@ class Candidate(models.Model):
 
     candidate_name = models.CharField(max_length=100)
     vying_position = models.CharField(verbose_name='elective position', max_length=3, choices=ELECTIVE_POSITIONS)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user')
     sublocation = models.ForeignKey(SubLocation, on_delete=models.CASCADE, db_column='sublocation')
     location = models.ForeignKey(Location, on_delete=models.CASCADE, db_column='location')
     ward = models.ForeignKey(Ward, on_delete=models.CASCADE, db_column='ward')
