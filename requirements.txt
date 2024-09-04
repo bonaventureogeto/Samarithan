@@ -10,7 +10,7 @@ coreapi==2.3.3
 coreschema==0.0.4
 coverage==5.0.4
 coveralls==2.0.0
-Django==3.0.5
+Django==3.2.25
 django-cors-headers==3.2.1
 django-postgres-extensions==0.9.3
 django-render-block==0.6
